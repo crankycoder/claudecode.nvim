@@ -31,11 +31,14 @@ describe("claudecode.init", function()
 
   local mock_lockfile = {
     create = function()
-      return true, "/mock/path"
+      return true, "/mock/path", "mock-auth-token-12345"
     end,
     ---@type SpyableFunction
     remove = function()
       return true
+    end,
+    generate_auth_token = function()
+      return "mock-auth-token-12345"
     end,
   }
 
@@ -92,6 +95,7 @@ describe("claudecode.init", function()
         return 1
       end),
       nvim_create_user_command = SpyObject.new(function() end),
+      nvim_echo = SpyObject.new(function() end),
     }
 
     vim.deepcopy = function(t)
@@ -296,6 +300,7 @@ describe("claudecode.init", function()
         open = spy.new(function() end),
         close = spy.new(function() end),
         setup = spy.new(function() end),
+        ensure_visible = spy.new(function() end),
       }
 
       local original_require = _G.require
